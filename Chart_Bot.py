@@ -30,11 +30,19 @@ def save_chat_history(messages):
 if "messages" not in st.session_state:
     st.session_state.messages = load_chat_history()
 
-# Sidebar with a button to delete chat history
+# Sidebar with a button to delete chat history and contact information
 with st.sidebar:
     if st.button("Delete Chat History"):
         st.session_state.messages = []
         save_chat_history([])
+
+    with st.expander("Developers"):
+        st.markdown("- Future")
+        st.markdown("- Kundananji")
+        st.markdown("- Lubinda")
+        st.markdown("- Lawrence")
+        st.markdown("- Emmanuel")
+
 
 # Display chat messages
 for message in st.session_state.messages:
@@ -61,5 +69,5 @@ if prompt := st.chat_input("How can I help?"):
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-# Save chat history after each interaction
-save_chat_history(st.session_state.messages)
+    # Save chat history after each interaction
+    save_chat_history(st.session_state.messages)
