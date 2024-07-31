@@ -1,13 +1,11 @@
 from flask import Flask, request, jsonify
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+import ollama
 
 app = Flask(__name__)
 
-# Load the model and tokenizer
-model_name = "mistralai/mistral-7b-v0.1"  # Replace with the actual Mistral model name
-tokenizer = AutoTokenizer.from_pretrained(model_name)
-model = AutoModelForCausalLM.from_pretrained(model_name)
+def get_bot_response(message):
+    response = ollama.chat(model='qwen:0.5b', messages=[{'role': 'user', 'content': message}])
+    return response['message']['content']
 
 @app.route('/chat', methods=['POST'])
 def chat():
@@ -17,10 +15,7 @@ def chat():
     if not prompt:
         return jsonify({"error": "No prompt provided"}), 400
 
-    inputs = tokenizer(prompt, return_tensors="pt")
-    outputs = model.generate(inputs["input_ids"], max_length=500)
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
+    response = get_bot_response(prompt)
     return jsonify({"response": response})
 
 if __name__ == '__main__':
